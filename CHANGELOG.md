@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.0 — 2026-11-03
+
+- Thêm công tắc độc lập ẩn tab Submissions, mặc định tắt.
+- Che toàn bộ wrapper FlexLayout dựa trên DOM LeetCode thực tế, cả khi không có tiêu đề đề bài.
+- Thêm regression tests cho bật/tắt, render lại tab, bảo toàn Description và Submit; kiểm tra lưu tùy chọn popup.
+- Không chặn URL trực tiếp hoặc tự chuyển khỏi nội dung lịch sử đang mở.
+
 ## 1.3.0 — 2026-11-03
 
 Snapshot đầu tiên chuẩn bị đưa lên GitHub, bao gồm:

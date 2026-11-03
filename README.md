@@ -4,7 +4,7 @@ Luyện lại bài cũ với một góc nhìn mới. Extension Chrome Manifest V
 
 ## Tính năng
 
-- Hai công tắc độc lập: **ẩn Solved và dấu tích**, **ẩn Easy / Medium / Hard** cạnh tiêu đề đề bài.
+- Ba công tắc độc lập: **ẩn Solved và dấu tích**, **ẩn Easy / Medium / Hard** cạnh tiêu đề đề bài và **ẩn tab Submissions**.
 - Lưu cài đặt cục bộ, áp dụng thay đổi cho các tab đã kết nối.
 - Theo dõi DOM khi LeetCode render lại hoặc chuyển bài.
 - Popup tiếng Việt, hỗ trợ sáng/tối, bàn phím và reduced motion.
@@ -23,7 +23,11 @@ Không cần Node.js hoặc build để sử dụng. Node.js chỉ dùng khi ph�
 
 ## Cách dùng và cập nhật
 
-Mở một trang `https://leetcode.com/problems/<slug>/description/`. Hai tùy chọn mặc định bật ở lần cài mới. Bạn có thể tắt riêng từng tùy chọn; cài đặt được lưu tự động.
+Mở một trang `https://leetcode.com/problems/<slug>/description/`. Hai tùy chọn che nhãn mặc định bật; **Ẩn tab Submissions** mặc định tắt, có thể bật riêng trong popup. Cài đặt được lưu tự động.
+
+Ẩn Submissions áp dụng cho toàn bộ phần tử tab có thể bấm, gồm icon và nhãn. Nếu đang mở lịch sử, nội dung hiện tại vẫn giữ nguyên: hãy chuyển sang Description. Tính năng không chặn URL submissions trực tiếp, không xóa lịch sử và không thay đổi nút Submit/kết quả submit. Tắt công tắc để hiện lại tab.
+
+Cơ chế đã đối chiếu trên DOM LeetCode: `#submissions_tab` nằm trong `.flexlayout__tab_button`; extension đánh dấu wrapper này trước khi tìm tiêu đề nên vẫn hoạt động khi trang lịch sử không có heading bài. Không ẩn các đoạn văn chỉ vì có chữ Submissions. Tham khảo cơ chế tab của [FlexLayout](https://github.com/caplin/FlexLayout).
 
 Sau khi cập nhật mã: bấm **Reload ↻** ở Fresh View trên `chrome://extensions`, rồi **refresh tab LeetCode**. Reload extension không tự thay content script của tab đã mở. Nếu chuyển thư mục, hãy kiểm tra đường dẫn trong Details hoặc tải lại bằng Load unpacked.
 
@@ -31,7 +35,7 @@ Sau khi cập nhật mã: bấm **Reload ↻** ở Fresh View trên `chrome://ex
 
 | Quyền / phạm vi | Mục đích |
 | --- | --- |
-| `storage` | Lưu hai lựa chọn trong `chrome.storage.local` |
+| `storage` | Lưu các lựa chọn trong `chrome.storage.local` |
 | Content script trên `https://leetcode.com/*` | Nhận diện và che nhãn trên trang đề bài, kể cả điều hướng nội bộ |
 
 Không có backend, analytics, mã tải từ xa hay thao tác gửi dữ liệu. Không đọc cookies hoặc lịch sử trình duyệt. Popup dùng tab đang hoạt động để gửi thông báo áp dụng cài đặt; không yêu cầu quyền `tabs`. Tính năng che nhãn chỉ chạy trên đường dẫn `/problems/...`.
