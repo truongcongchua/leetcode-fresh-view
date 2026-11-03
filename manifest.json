@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "LeetCode Fresh View",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Hide Solved and difficulty badges beside LeetCode problem titles.",
   "permissions": [
     "storage"

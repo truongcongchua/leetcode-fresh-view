@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  let settings = { hideSolved: true, hideDifficulty: true };
+  let settings = { hideSolved: true, hideDifficulty: true, hideSubmissions: false };
   let scheduled = false;
   const marker = 'data-lcfv-hidden';
   const isProblem = () => /^\/problems\/[^/]+(?:\/|$)/.test(location.pathname);
@@ -22,6 +22,14 @@
     scheduled = false;
     document.querySelectorAll(`[${marker}]`).forEach(el => el.removeAttribute(marker));
     if (!isProblem()) return;
+    // Verified on LeetCode's FlexLayout DOM: hide the clickable wrapper,
+    // not just its nested title (which has two overlapping text elements).
+    if (settings.hideSubmissions) {
+      document.querySelectorAll('[id="submissions_tab"]').forEach(tab => {
+        const button = tab.closest('.flexlayout__tab_button, [role="tab"]') || tab;
+        button.setAttribute(marker, '');
+      });
+    }
     const title = titleForPage();
     if (!title) return;
     // Only inspect a few compact ancestors of the numbered problem heading.
@@ -78,7 +86,8 @@
   function applySettings(values) {
     settings = {
       hideSolved: values.hideSolved ?? values.enabled ?? true,
-      hideDifficulty: values.hideDifficulty ?? values.enabled ?? true
+      hideDifficulty: values.hideDifficulty ?? values.enabled ?? true,
+      hideSubmissions: values.hideSubmissions ?? false
     };
     document.documentElement.removeAttribute('data-lcfv-off');
     schedule();
@@ -86,18 +95,18 @@
   const observer = new MutationObserver(schedule);
   function start() {
     observer.observe(document.documentElement, { childList: true, subtree: true, characterData: true });
-    chrome.storage.local.get(['enabled', 'hideSolved', 'hideDifficulty']).then(applySettings);
+    chrome.storage.local.get(['enabled', 'hideSolved', 'hideDifficulty', 'hideSubmissions']).then(applySettings);
     chrome.storage.onChanged.addListener((changes, area) => {
-      if (area === 'local' && ['enabled', 'hideSolved', 'hideDifficulty'].some(key => key in changes)) {
-        chrome.storage.local.get(['enabled', 'hideSolved', 'hideDifficulty']).then(applySettings);
+      if (area === 'local' && ['enabled', 'hideSolved', 'hideDifficulty', 'hideSubmissions'].some(key => key in changes)) {
+        chrome.storage.local.get(['enabled', 'hideSolved', 'hideDifficulty', 'hideSubmissions']).then(applySettings);
       }
     });
     chrome.runtime.onMessage.addListener((message, sender, reply) => {
       if (message.type !== 'fresh-view-settings') return;
-      chrome.storage.local.get(['enabled', 'hideSolved', 'hideDifficulty']).then(values => {
+      chrome.storage.local.get(['enabled', 'hideSolved', 'hideDifficulty', 'hideSubmissions']).then(values => {
         applySettings(values);
         scan();
-        reply({ applied: true, problemPage: isProblem(), titleFound: Boolean(titleForPage()) });
+        reply({ applied: true, problemPage: isProblem(), titleFound: Boolean(titleForPage()), submissionsFound: Boolean(document.getElementById('submissions_tab')) });
       });
       return true;
     });
