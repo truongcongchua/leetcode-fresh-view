@@ -1,0 +1,3 @@
+html:not([data-lcfv-off]) [data-lcfv-hidden] {
+  display: none !important;
+}
